@@ -2,7 +2,15 @@ let correctAnswer;
 
 document.addEventListener("DOMContentLoaded", function() {
   loadQuestion();
+
+  eventListeners();
 });
+
+eventListeners = () => {
+  document
+    .querySelector("#check-answer")
+    .addEventListener("click", validateAnswer);
+};
 
 // load a new question from API
 loadQuestion = () => {
@@ -49,6 +57,8 @@ displayQuestion = questions => {
       const answerHTML = document.createElement("li");
       answerHTML.classList.add("col-12", "col-md-5");
       answerHTML.textContent = answer;
+      // attach an event click the answer is clicked
+      answerHTML.onclick = selectAnswer;
       answerDiv.appendChild(answerHTML);
     });
     questionHTML.appendChild(answerDiv);
@@ -56,4 +66,47 @@ displayQuestion = questions => {
     // render in HTML
     document.querySelector("#app").appendChild(questionHTML);
   });
+};
+
+// When the answer is select
+selectAnswer = e => {
+  // removes the previous active class for the answer
+  if (document.querySelector(".active")) {
+    const activeAnswer = document.querySelector(".active");
+    activeAnswer.classList.remove("active");
+  }
+  // adds the current answer
+  e.target.classList.add("active");
+};
+
+// Checks if the answer is correct and 1 answer is selected
+validateAnswer = () => {
+  if (document.querySelector(".questions .active")) {
+    // everything is fine, check if the answer is correct or not
+    checkAnswer();
+  } else {
+    // error, the user didn't select anything
+    const errorDiv = document.createElement("div");
+    errorDiv.classList.add("alert", "alert-danger", "col-md-6");
+    errorDiv.textContent = "Please select 1 answer";
+    // select the questions div to insert the alert
+    const questionDiv = document.querySelector(".questions");
+    questionDiv.appendChild(errorDiv);
+
+    // remove the error
+    setTimeout(() => {
+      document.querySelector(".alert-danger").remove();
+    }, 3000);
+  }
+};
+
+// check if the answer is correct or not
+checkAnswer = () => {
+  const userAnswer = document.querySelector(".questions .active");
+
+  if (userAnswer.textContent === correctAnswer) {
+    console.log("thats correct");
+  } else {
+    console.log("Wrong");
+  }
 };
