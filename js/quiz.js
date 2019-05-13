@@ -1,4 +1,6 @@
-let correctAnswer;
+let correctAnswer,
+  correctNumber = 0,
+  incorrectNumber = 0;
 
 document.addEventListener("DOMContentLoaded", function() {
   loadQuestion();
@@ -41,6 +43,10 @@ displayQuestion = questions => {
     questionHTML.innerHTML = `
         <div class="row justify-content-between heading">
             <p class="category">Category: ${question.category}</p>
+            <div class="totals">
+                <span class="badge badge-success">${correctNumber}</span>
+                <span class="badge badge-danger">${incorrectNumber}</span>
+            </div>
         </div
         <h2 class="text-center">${question.question}</h2>
     `;
@@ -105,8 +111,16 @@ checkAnswer = () => {
   const userAnswer = document.querySelector(".questions .active");
 
   if (userAnswer.textContent === correctAnswer) {
-    console.log("thats correct");
+    correctNumber++;
   } else {
-    console.log("Wrong");
+    incorrectNumber++;
   }
+  // clear previous html
+  const app = document.querySelector("#app");
+  while (app.firstChild) {
+    app.removeChild(app.firstChild);
+  }
+
+  // load a new question
+  loadQuestion();
 };
